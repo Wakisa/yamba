@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func GenerateCobraRoot(cwd, projectName string) {
+func GenerateCobraRoot(cwd, projectName string) error {
 	cobraFile := filepath.Join(cwd, "cmd", "root.go")
 	content := fmt.Sprintf(`package cmd
 
@@ -32,6 +32,8 @@ func Execute() {
     }
 }
 `, projectName, projectName, projectName)
-	os.WriteFile(cobraFile, []byte(content), 0644)
-	fmt.Println("[✔] Added Cobra root.go")
+	if err := os.MkdirAll(filepath.Dir(cobraFile), os.ModePerm); err != nil {
+		return err
+	}
+	return os.WriteFile(cobraFile, []byte(content), 0644)
 }

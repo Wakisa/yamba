@@ -36,15 +36,7 @@ func main() {
 		Use:   "init",
 		Short: "Initialize a new project.",
 		Run: func(cmd *cobra.Command, args []string) {
-			steps := []string{
-				"Confirm directory",
-				"Choose backend or backend+UI",
-				"Create backend folders",
-				"Generate Cobra root.go",
-				"Generate stub files",
-			}
-
-			p := tea.NewProgram(schema.NewModel(steps, false))
+			p := tea.NewProgram(schema.NewModel())
 			finalModel, err := p.Run()
 			if err != nil {
 				fmt.Println("Error running the program:", err)
