@@ -38,17 +38,22 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Build
+      - name: Build (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
-          go env -w GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }}
           BIN_NAME=yamba-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.ref_name }}${{ matrix.ext }}
-          go build -o $BIN_NAME .
-          # Generate SHA256 checksum
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            certutil -hashfile $BIN_NAME SHA256 > $BIN_NAME.sha256
-          else
-            shasum -a 256 $BIN_NAME > $BIN_NAME.sha256
-          fi
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o $BIN_NAME .
+          shasum -a 256 $BIN_NAME > $BIN_NAME.sha256
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $BinName = "yamba-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.ref_name }}${{ matrix.ext }}"
+          $env:GOOS="${{ matrix.goos }}"
+          $env:GOARCH="${{ matrix.goarch }}"
+          go build -o $BinName .
+          Get-FileHash $BinName -Algorithm SHA256 | Format-List | Out-File "$BinName.sha256"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
