@@ -8,6 +8,7 @@ It scaffolds backend and optional UI folders, sets up Cobra for CLI commands, an
 - Confirmation prompt to avoid generating files in the wrong directory.
 - Choice between **backend only** or **backend + UI** scaffolding.
 - Automatic creation of common project folders (`cmd`, `internal`, `pkg`, `docs`, etc.).
+- Generated API router with a starter `GET /api/v1/health` endpoint.
 - Built-in `version` command (`yamba version`, `yamba --version`, `yamba -v`).
 
 ## 🚀 Installation

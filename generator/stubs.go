@@ -24,10 +24,36 @@ func Authenticate(username, password string) (bool, error) {
 func AuthHandler() {
     // TODO: implement
 }`},
+	{"internal/api/routes.go", `package api
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+// NewRouter creates the HTTP router for the API.
+func NewRouter() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/v1/health", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			w.Header().Set("Allow", http.MethodGet)
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{"status": "ok"}); err != nil {
+			http.Error(w, "failed to encode response", http.StatusInternalServerError)
+		}
+	})
+	return mux
+}`},
 	{"internal/api/api.go", `package api
 
-func InitAPI() {
-    // TODO: implement
+import "net/http"
+
+func InitAPI() *http.ServeMux {
+	return NewRouter()
 }`},
 	{"internal/api/middleware.go", `package api
 
